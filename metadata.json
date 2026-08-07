@@ -1,6 +1,6 @@
 {
-  "name": "Android Build Flow",
-  "description": "Android application configured with GitHub Actions for automated build and deployment.",
+  "name": "App Manager",
+  "description": "An application manager utilizing Shizuku.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

@@ -22,6 +22,6 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "Android Build Flow"
+rootProject.name = "App Manager"
 
 include(":app")
