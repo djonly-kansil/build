@@ -1,22 +1,50 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# App Controll
 
-# Run and deploy your AI Studio app 
+Aplikasi Android native (Kotlin + Jetpack Compose) untuk memantau RAM dan mengelola aplikasi
+tanpa root maupun Shizuku. Penghentian aplikasi, pembersihan cache, dan uninstall dijalankan
+otomatis melalui `AccessibilityService` yang menekan tombol di layar Setelan sistem, dibungkus
+foreground service + overlay progres agar layar tidak berkedip.
 
-This contains everything you need to run your app locally.
+- Package: `com.taloarane.appcontroll`
+- minSdk 24 · targetSdk/compileSdk 36
+- Kotlin 2.2 · Compose Material 3 · DataStore · Coil
 
-View your app in AI Studio: https://ai.studio/apps/3ff4adc9-71eb-4d28-a0d5-60408455f5c1
+## Struktur
 
-## Run Locally
+```text
+app/src/main/java/com/taloarane/appcontroll
+├─ MainActivity.kt          layar utama (RAM, bersihkan, filter, tab, daftar app, bottom nav)
+├─ data/                    RamRepository, AppRepository, StorageRepository, Prefs (DataStore)
+├─ service/                 CleanQueue, AppControllAccessibilityService, CleanForegroundService
+└─ ui/                      tema gelap/terang, string ID/EN, ViewModel, komponen & layar
+```
 
-**Prerequisites:**  [Android Studio](https://developer.android.com/studio)
+## Build lokal (Termux)
 
+```bash
+# sekali saja: buat Gradle wrapper
+gradle wrapper --gradle-version 8.13
 
-1. Open Android Studio
-2. Select **Open** and choose the directory containing this project
-3. Allow Android Studio to fix any incompatibilities as it imports the project.
-4. Create a file named `.env` in the project directory and set `GEMINI_API_KEY` in that file to your Gemini API key (see `.env.example` for an example)
-5. Remove this line from the app's `build.gradle.kts` file: `signingConfig = signingConfigs.getByName("debugConfig")`
-6. Run the app on an emulator or physical device
-7. If you have already published your app in AI Studio, please [request upload key reset](https://support.google.com/googleplay/android-developer/answer/9842756#zippy=%2Crequest-an-upload-key-reset) in Google Play Console.
+./gradlew assembleDebug
+```
+
+## Build di GitHub Actions
+
+Workflow `.github/workflows/build.yml` memakai JDK 17 (temurin), membuat wrapper otomatis bila
+`gradlew` belum ada, lalu menjalankan `./gradlew assembleRelease` dan mengunggah APK sebagai artifact.
+
+Signing memakai repository secrets:
+
+| Secret | Isi |
+| --- | --- |
+| `KEYSTORE` | keystore `.jks` dalam base64 |
+| `KEYSTORE_PASSWORD` | password keystore |
+| `ALIAS` | nama alias kunci |
+| `ALIAS_PASSWORD` | password alias |
+
+Bila `KEYSTORE` kosong, build tetap jalan dan menghasilkan APK release tanpa tanda tangan.
+
+## Izin yang diminta saat onboarding
+
+Aksesibilitas, PACKAGE_USAGE_STATS, MANAGE_EXTERNAL_STORAGE, POST_NOTIFICATIONS,
+SYSTEM_ALERT_WINDOW (overlay), QUERY_ALL_PACKAGES, REQUEST_DELETE_PACKAGES.

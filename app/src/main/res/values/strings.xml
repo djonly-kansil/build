@@ -1,3 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">App Controller Pro</string>
+    <string name="app_name">App Controll</string>
+    <string name="accessibility_label">App Controll — otomatisasi</string>
+    <string name="accessibility_description">Mengizinkan App Controll menekan tombol Paksa berhenti, Hapus cache, dan Uninstall di layar Setelan secara otomatis.</string>
 </resources>
