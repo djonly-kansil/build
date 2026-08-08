@@ -1,1 +1,1 @@
--dontwarn kotlinx.**
+-keep class com.taloarane.appcontroll.** { *; }
