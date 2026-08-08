@@ -19,27 +19,8 @@ jobs:
           java-version: '17'
           cache: gradle
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v5
-
-      - name: Create Gradle wrapper if missing
-        run: |
-          if [ ! -f ./gradlew ]; then
-            echo "gradlew not found, generating wrapper"
-            gradle wrapper --gradle-version 9.6.1
-          fi
-          chmod +x ./gradlew
-
-      - name: Accept SDK licenses and install platform 36
-        run: |
-          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
-          [ -x "$SDKMANAGER" ] || SDKMANAGER="$(command -v sdkmanager || true)"
-          if [ -n "$SDKMANAGER" ]; then
-            yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
-            "$SDKMANAGER" "platforms;android-36" "build-tools;36.0.0" || true
-          fi
-
-
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
       - name: Decode keystore
         if: ${{ secrets.KEYSTORE != '' }}
@@ -49,6 +30,7 @@ jobs:
 
       - name: Build release APK
         env:
+          KEYSTORE_FILE: keystore.jks
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           ALIAS: ${{ secrets.ALIAS }}
           ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
