@@ -23,10 +23,12 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Decode keystore
-        if: ${{ secrets.KEYSTORE != '' }}
         env:
           KEYSTORE: ${{ secrets.KEYSTORE }}
-        run: echo "$KEYSTORE" | base64 -d > keystore.jks
+        run: |
+          if [ -n "$KEYSTORE" ]; then
+            echo "$KEYSTORE" | base64 -d > keystore.jks
+          fi
 
       - name: Build release APK
         env:
