@@ -1,5 +1,6 @@
 import java.io.FileOutputStream
 import java.util.Base64
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
@@ -7,7 +8,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
-// Signing material dari GitHub Actions / Environment Variables
+// Signing material comes from GitHub Actions secrets:
+// KEYSTORE (base64), KEYSTORE_PASSWORD, ALIAS, ALIAS_PASSWORD
 val keystoreBase64: String? = System.getenv("KEYSTORE")
 val keystorePasswordEnv: String? = System.getenv("KEYSTORE_PASSWORD")
 val keyAliasEnv: String? = System.getenv("ALIAS")
@@ -22,18 +24,18 @@ val hasReleaseSigning = !keystoreBase64.isNullOrBlank() &&
 if (hasReleaseSigning) {
     decodedKeystore.parentFile.mkdirs()
     FileOutputStream(decodedKeystore).use {
-        it.write(Base64.getDecoder().decode(keystoreBase64!!.trim()))
+        it.write(Base64.getMimeDecoder().decode(keystoreBase64!!.trim()))
     }
 }
 
 android {
     namespace = "com.taloarane.appcontroll"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.taloarane.appcontroll"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0.0"
         vectorDrawables.useSupportLibrary = true
@@ -70,16 +72,18 @@ android {
         isCoreLibraryDesugaringEnabled = true
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
     buildFeatures {
         compose = true
     }
 
     packaging {
         resources.excludes += setOf("/META-INF/{AL2.0,LGPL2.1}")
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 
@@ -92,8 +96,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.datastore.preferences)
 
-    val composeBom = platform(libs.androidx.compose.bom)
-    implementation(composeBom)
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.material3)

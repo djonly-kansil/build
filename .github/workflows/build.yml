@@ -1,9 +1,8 @@
-name: Build Release APK
+name: Build APK
 
 on:
   push:
-    branches: [main, master]
-  pull_request:
+    branches: ["**"]
   workflow_dispatch:
 
 jobs:
@@ -16,43 +15,28 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
-          cache: gradle
+          java-version: "17"
 
-      - name: Set up Gradle
+      - name: Set up Gradle 9.1.0 (with cache)
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.1.0"
+          cache-read-only: false
 
-      - name: Create Gradle wrapper if missing
+      - name: Ensure Gradle wrapper exists
         run: |
           if [ ! -f ./gradlew ]; then
-            echo "gradlew not found, generating wrapper"
-            gradle wrapper --gradle-version 8.10.2
+            gradle wrapper --gradle-version 9.1.0
           fi
           chmod +x ./gradlew
 
-      - name: Accept SDK licenses and install platform 36
-        run: |
-          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
-          [ -x "$SDKMANAGER" ] || SDKMANAGER="$(command -v sdkmanager || true)"
-          if [ -n "$SDKMANAGER" ]; then
-            yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
-            "$SDKMANAGER" "platforms;android-36" "build-tools;36.0.0" || true
-          fi
-
-
-
-      - name: Decode keystore
-        if: ${{ secrets.KEYSTORE != '' }}
-        env:
-          KEYSTORE: ${{ secrets.KEYSTORE }}
-        run: echo "$KEYSTORE" | base64 -d > keystore.jks
-
       - name: Build release APK
         env:
+          KEYSTORE: ${{ secrets.KEYSTORE }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           ALIAS: ${{ secrets.ALIAS }}
           ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
-        run: ./gradlew assembleRelease --stacktrace
+        run: ./gradlew assembleRelease --stacktrace --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
