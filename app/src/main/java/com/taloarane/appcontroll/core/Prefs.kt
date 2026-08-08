@@ -17,15 +17,15 @@ class Prefs private constructor(context: Context) {
     var keepScreenOn by mutableStateOf(sp.getBoolean("keep_screen_on", false))
     var whitelist by mutableStateOf(sp.getStringSet("whitelist", emptySet())!!.toSet())
 
-    fun setLanguage(v: String) {
+    fun updateLanguage(v: String) {
         language = v; sp.edit().putString("lang", v).apply()
     }
 
-    fun setTheme(v: ThemeMode) {
+    fun updateTheme(v: ThemeMode) {
         themeMode = v; sp.edit().putString("theme", v.name).apply()
     }
 
-    fun setKeepScreenOn(v: Boolean) {
+    fun updateKeepScreenOn(v: Boolean) {
         keepScreenOn = v; sp.edit().putBoolean("keep_screen_on", v).apply()
     }
 

@@ -44,20 +44,20 @@ fun SettingsScreen(prefs: Prefs) {
     ) {
         Section(l.language) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                FilterChipAc("Indonesia", prefs.language == "id", Modifier.weight(1f)) { prefs.setLanguage("id") }
-                FilterChipAc("English", prefs.language == "en", Modifier.weight(1f)) { prefs.setLanguage("en") }
+                FilterChipAc("Indonesia", prefs.language == "id", Modifier.weight(1f)) { prefs.updateLanguage("id") }
+                FilterChipAc("English", prefs.language == "en", Modifier.weight(1f)) { prefs.updateLanguage("en") }
             }
         }
         Section(l.theme) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 FilterChipAc(l.themeDark, prefs.themeMode == ThemeMode.DARK, Modifier.weight(1f)) {
-                    prefs.setTheme(ThemeMode.DARK)
+                    prefs.updateTheme(ThemeMode.DARK)
                 }
                 FilterChipAc(l.themeLight, prefs.themeMode == ThemeMode.LIGHT, Modifier.weight(1f)) {
-                    prefs.setTheme(ThemeMode.LIGHT)
+                    prefs.updateTheme(ThemeMode.LIGHT)
                 }
                 FilterChipAc(l.themeSystem, prefs.themeMode == ThemeMode.SYSTEM, Modifier.weight(1f)) {
-                    prefs.setTheme(ThemeMode.SYSTEM)
+                    prefs.updateTheme(ThemeMode.SYSTEM)
                 }
             }
         }
@@ -69,7 +69,7 @@ fun SettingsScreen(prefs: Prefs) {
                     fontSize = 13.sp,
                     modifier = Modifier.weight(1f)
                 )
-                Switch(checked = prefs.keepScreenOn, onCheckedChange = { prefs.setKeepScreenOn(it) })
+                Switch(checked = prefs.keepScreenOn, onCheckedChange = { prefs.updateKeepScreenOn(it) })
             }
         }
         Section(l.permissionsTitle) {
