@@ -42,8 +42,8 @@ captures/
 .cxx/
 *.jks
 *.keystore
+.workspace/
 keystore.jks
 <<<<<<< HEAD
-.workspce/
 =======
 >>>>>>> 2f2cd32 (wowow k(ntol)
